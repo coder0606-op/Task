@@ -4,10 +4,7 @@ import User from "../models/User.js";
 import logEvent from "../services/logEvent.js";
 import getRandomProvider from "../services/providerSelector.js";
 
-/**
- * CUSTOMER → Create Booking
- * Auto-assign random available provider
- */
+
 export const createBooking = async (req, res) => {
   try {
     const { serviceType, address } = req.body;
@@ -16,7 +13,7 @@ export const createBooking = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Create booking
+    
     const booking = await Booking.create({
       customerId: req.user.id,
       serviceType,
@@ -31,7 +28,7 @@ export const createBooking = async (req, res) => {
       actorRole: "CUSTOMER"
     });
 
-    // Auto-assign provider
+  
     const provider = await getRandomProvider();
 
     if (provider) {
