@@ -50,13 +50,13 @@ export default function Task({ task, members, refreshTasks }) {
       {...attributes}
       className="bg-white p-3 rounded-lg shadow-sm border cursor-grab hover:shadow-md transition"
     >
-      {/* Task header */}
+      
       <div className="flex justify-between items-start">
         <div className="font-medium text-gray-800">
           {task.title}
         </div>
 
-        {/* Delete button */}
+       
         <button
           onClick={deleteTask}
           className="text-red-500 text-sm hover:text-red-700"
