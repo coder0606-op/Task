@@ -14,6 +14,7 @@ export default function Task({ task, members, refreshTasks }) {
       }
     : undefined;
 
+  // assign user
   const assignUser = async (userId) => {
     const res = await api.put(`/tasks/${task._id}`, {
       assignedTo: [userId],
@@ -27,6 +28,20 @@ export default function Task({ task, members, refreshTasks }) {
     refreshTasks();
   };
 
+  // delete task
+  const deleteTask = async () => {
+    const confirmDelete = window.confirm("Delete this task?");
+    if (!confirmDelete) return;
+
+    await api.delete(`/tasks/${task._id}`);
+
+    socket.emit("task-update", {
+      boardId: task.boardId,
+    });
+
+    refreshTasks();
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -34,33 +49,41 @@ export default function Task({ task, members, refreshTasks }) {
       {...listeners}
       {...attributes}
       className="bg-white p-3 rounded-lg shadow-sm border cursor-grab hover:shadow-md transition"
-
     >
-     <div className="font-medium text-gray-800">
-  {task.title}
-</div>
+      {/* Task header */}
+      <div className="flex justify-between items-start">
+        <div className="font-medium text-gray-800">
+          {task.title}
+        </div>
 
+        {/* Delete button */}
+        <button
+          onClick={deleteTask}
+          className="text-red-500 text-sm hover:text-red-700"
+        >
+          ✕
+        </button>
+      </div>
 
-{task.assignedTo && task.assignedTo.length > 0 && (
-  <div className="text-xs text-blue-600 mt-1 font-medium">
-
-    Assigned to: {task.assignedTo[0].name}
-  </div>
-)}
+     
+      {task.assignedTo && task.assignedTo.length > 0 && (
+        <div className="text-xs text-blue-600 mt-1 font-medium">
+          Assigned to: {task.assignedTo[0].name}
+        </div>
+      )}
 
       <select
-  className="mt-2 w-full border p-1 text-sm"
-  onChange={(e) => assignUser(e.target.value)}
-  value={task.assignedTo?.[0]?._id || ""}
->
-  <option value="">Assign user</option>
-  {members.map((user) => (
-    <option key={user._id} value={user._id}>
-      {user.name}
-    </option>
-  ))}
-</select>
-
+        className="mt-2 w-full border p-1 text-sm"
+        onChange={(e) => assignUser(e.target.value)}
+        value={task.assignedTo?.[0]?._id || ""}
+      >
+        <option value="">Assign user</option>
+        {members.map((user) => (
+          <option key={user._id} value={user._id}>
+            {user.name}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
