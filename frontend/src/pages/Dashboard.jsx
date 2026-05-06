@@ -43,7 +43,7 @@ export default function Dashboard() {
     
       <form
         onSubmit={createBoard}
-        className="mb-8 flex gap-3"
+        className="mb-10 flex gap-3"
       >
         <input
           placeholder="New board title"
